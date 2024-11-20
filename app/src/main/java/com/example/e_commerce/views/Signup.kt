@@ -28,8 +28,10 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.e_commerce.R
+import com.example.e_commerce.viewModel.SignUpViewModel
 import com.example.e_commerce.views.widgets.MyTextField
 import kotlinx.serialization.Serializable
 
@@ -38,18 +40,9 @@ import kotlinx.serialization.Serializable
 object SignUpRoute
 
 @Composable
-fun Signup(navController: NavController,modifier: Modifier = Modifier) {
+fun Signup(navController: NavController,modifier: Modifier = Modifier , viewModel: SignUpViewModel = hiltViewModel()) {
     // State to hold the text field value
-    var fullNameTextField by remember { mutableStateOf(TextFieldValue("")) }
-    var mobileNumberTextField by remember { mutableStateOf(TextFieldValue("")) }
-    var emailAddressTextField by remember { mutableStateOf(TextFieldValue("")) }
-    var passwordTextField by remember { mutableStateOf(TextFieldValue("")) }
-    var passwordVisible by remember { mutableStateOf(false) }
 
-    var fullNameError by remember { mutableStateOf("") }
-    var mobileNumberError by remember { mutableStateOf("") }
-    var emailAddressError by remember { mutableStateOf("") }
-    var passwordError by remember { mutableStateOf("") }
 
     Box(
         modifier =
@@ -85,54 +78,53 @@ fun Signup(navController: NavController,modifier: Modifier = Modifier) {
                 // Full Name
                 Text(text = "Full Name", color = Color.White, fontSize = 16.sp)
                 MyTextField(
-                    value = fullNameTextField,
-                    onValueChange = { fullNameTextField = it },
+                    value = viewModel.fullNameTextField,
+                    onValueChange = { viewModel.fullNameTextField = it },
                     label = "Full Name",
-                    error = fullNameError,
-                    onErrorChange = { fullNameError = it },
+                    error = viewModel.fullNameError,
+                    onErrorChange = { viewModel.fullNameError = it },
                 )
 
                 // Mobile Number
                 Text(text = "Mobile Number", color = Color.White, fontSize = 16.sp)
                 MyTextField(
-                    value = mobileNumberTextField,
-                    onValueChange = { mobileNumberTextField = it },
+                    value = viewModel.mobileNumberTextField,
+                    onValueChange = { viewModel.mobileNumberTextField = it },
                     label = "Mobile Number",
-                    error = mobileNumberError,
-                    onErrorChange = { mobileNumberError = it },
+                    error = viewModel.mobileNumberError,
+                    onErrorChange = { viewModel.mobileNumberError = it },
                 )
 
                 // E-mail address
                 Text(text = "E-mail address", color = Color.White, fontSize = 16.sp)
                 MyTextField(
-                    value = emailAddressTextField,
-                    onValueChange = { emailAddressTextField = it },
+                    value = viewModel.emailAddressTextField,
+                    onValueChange = { viewModel.emailAddressTextField = it },
                     label = "E-mail address",
-                    error = emailAddressError,
-                    onErrorChange = { emailAddressError = it },
+                    error = viewModel.emailAddressError,
+                    onErrorChange = { viewModel.emailAddressError = it },
                 )
 
                 // Password
                 Text(text = "Password", color = Color.White, fontSize = 16.sp)
                 MyTextField(
-                    value = passwordTextField,
-                    onValueChange = { passwordTextField = it },
+                    value = viewModel.passwordTextField,
+                    onValueChange = { viewModel.passwordTextField = it },
                     label = "Password",
-                    error = passwordError,
-                    onErrorChange = { passwordError = it },
+                    error = viewModel.passwordError,
+                    onErrorChange = { viewModel.passwordError = it },
                     isPasswordField = true,
-                    passwordVisible = passwordVisible,
-                    onPasswordVisibilityChange = { passwordVisible = it },
+                    passwordVisible = viewModel.passwordVisible,
+                    onPasswordVisibilityChange = { viewModel.passwordVisible = it },
                 )
 
                 Button(
                     onClick = {
-                        fullNameError = if (fullNameTextField.text.isEmpty()) "Required !" else ""
-                        mobileNumberError = if (mobileNumberTextField.text.isEmpty()) "Required !" else ""
-                        emailAddressError = if (emailAddressTextField.text.isEmpty()) "Required !" else ""
-                        passwordError = if (passwordTextField.text.isEmpty()) "Required !" else ""
 
-                        if (fullNameError.isEmpty() && passwordError.isEmpty() && mobileNumberError.isEmpty() && emailAddressError.isEmpty()) {
+                        viewModel.register()
+
+
+                        if (viewModel.isSuccess) {
                             navController.navigate(HomeRoute) {
                                 popUpTo(SignUpRoute) { inclusive = true }
                             }
@@ -157,4 +149,5 @@ fun Signup(navController: NavController,modifier: Modifier = Modifier) {
             }
         }
     }
+
 }

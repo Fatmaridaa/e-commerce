@@ -28,7 +28,11 @@ import com.example.e_commerce.views.SignInRoute
 import com.example.e_commerce.views.SignUpRoute
 import com.example.e_commerce.views.Signup
 import com.example.e_commerce.views.widgets.MyBottomAppBar
+import dagger.hilt.android.AndroidEntryPoint
 
+
+
+@AndroidEntryPoint
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,16 +44,17 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
 
                 Scaffold(bottomBar = {
-                    MyBottomAppBar(navController = navController)
+                    val currentRoute = navController.currentBackStackEntry?.destination?.route
+                    if (currentRoute != null && currentRoute  in  listOf(HomeRoute , CategoriesRoute , FavoriteRoute , ProfileRoute)){
+                        MyBottomAppBar(navController = navController)
+                    }
+
                 }) { paddingValues ->
 
                     AppNavigation(navController = navController , modifier = Modifier.fillMaxSize().padding(paddingValues))
 
                 }
             }
-
-
-
 
         }
     }
